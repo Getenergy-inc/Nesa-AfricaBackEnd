@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import {sequelize} from "../../config/database.js";
-import User from "../User.js";
+import User from "../postgresql/User.js";
 
 const Ticket = sequelize.define("Ticket", {
 

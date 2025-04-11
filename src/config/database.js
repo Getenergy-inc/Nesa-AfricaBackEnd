@@ -1,7 +1,8 @@
+// db/config/database.js or wherever you're managing this
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load environment variables
+dotenv.config(); // Load env vars from .env
 
 const databaseUrl = process.env.POSTGRES_URI;
 
@@ -9,25 +10,29 @@ if (!databaseUrl) {
   throw new Error("❌ POSTGRES_URI is not defined in the .env file.");
 }
 
-// Initialize Sequelize (but don't sync models here)
+// Create Sequelize instance
 export const sequelize = new Sequelize(databaseUrl, {
   dialect: "postgres",
-  logging: false, // Set to true for debugging SQL queries
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true, // Supabase requires SSL
+      rejectUnauthorized: false // Allow self-signed certs
+    }
+  }
 });
 
+// Connect and sync
 export const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log("✅ PostgreSQL connected successfully.");
 
-    // Import models after sequelize is initialized
     const { Role } = await import("../models/index.js");
 
-    // Sync models
     await sequelize.sync({ alter: true });
     console.log("✅ Tables synced.");
 
-    // Seed roles
     const { seedRoles } = await import("../seeds/seedRoles.js");
     await seedRoles();
 
