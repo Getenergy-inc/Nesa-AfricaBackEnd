@@ -22,7 +22,6 @@ import ticketRoutes from "./routes/ticket.routes.js";
 import volunteerRoutes from "./routes/volunteer.routes.js";
 
 
-
 dotenv.config(); // Load environment variables
 
 const app = express();
@@ -35,10 +34,12 @@ app.use(morgan("dev")); // Logging
 
 
 
+
 // Public Routes
 app.use("/api/auth", authRoutes); // Signup & Login routes
 app.use("/api", uploadRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+
 
 
 
