@@ -2,6 +2,8 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 dotenv.config(); // Load env vars from .env
 
 const databaseUrl = process.env.POSTGRES_URI;
@@ -14,12 +16,12 @@ if (!databaseUrl) {
 export const sequelize = new Sequelize(databaseUrl, {
   dialect: "postgres",
   logging: false,
-  dialectOptions: {
+  dialectOptions: isProduction ? {
     ssl: {
       require: true, // Supabase requires SSL
       rejectUnauthorized: false // Allow self-signed certs
     }
-  }
+  } : {},
 });
 
 // Connect and sync
