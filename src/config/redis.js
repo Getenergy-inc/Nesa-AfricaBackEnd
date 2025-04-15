@@ -3,12 +3,28 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const redis = new Redis(process.env.REDIS_URI);
-console.log("REDIS_URL:", process.env.REDIS_URL);
+let redis = null;
 
+if (process.env.REDIS_URI) {
+  redis = new Redis(process.env.REDIS_URI, {
+    maxRetriesPerRequest: 1,      // Try only once per command
+    connectTimeout: 3000,         // Fail faster if Redis is unreachable
+    lazyConnect: true,            // Only connect when a command is issued
+    enableOfflineQueue: false,     // Prevent commands queuing if not connected
+  });
 
-redis.on("connect", () => console.log("✅ Redis Connected Successfull...!"));
-redis.on("error", (err) => console.error("❌ Redis Error:", err));
+  redis.connect().then(() => {
+    console.log("✅ Redis Connected Successfully...!");
+  }).catch((err) => {
+    console.error("❌ Redis Connection Failed:", err.message);
+    redis = null; // Fallback to avoid using broken instance
+  });
 
+  redis.on("error", (err) => {
+    console.error("❌ Redis Error:", err.message);
+  });
+} else {
+  console.log("⚠️ Skipping Redis: REDIS_URI not set");
+}
 
 export default redis;
