@@ -44,7 +44,7 @@ app.use("/api/leaderboard", leaderboardRoutes);
 
 
 // Protected Routes (Require JWT Authentication)
-app.use("/api/user", userRoutes); // User-related routes
+app.use("/api/users", userRoutes); // User-related routes
 app.use("/api/nominations", nominationRoutes);
 app.use("/api", walletRoutes);
 app.use("/api/votes", votingRoutes);
