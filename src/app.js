@@ -36,7 +36,7 @@ app.use(morgan("dev")); // Logging
 
 
 // Public Routes
-app.use("/api/auth", authRoutes); // Signup & Login routes
+app.use("/api/auths", authRoutes); // Signup & Login routes
 app.use("/api", uploadRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 
@@ -44,7 +44,7 @@ app.use("/api/leaderboard", leaderboardRoutes);
 
 
 // Protected Routes (Require JWT Authentication)
-app.use("/api/users", userRoutes); // User-related routes
+app.use("/api/user", userRoutes); // User-related routes
 app.use("/api/nominations", nominationRoutes);
 app.use("/api", walletRoutes);
 app.use("/api/votes", votingRoutes);
