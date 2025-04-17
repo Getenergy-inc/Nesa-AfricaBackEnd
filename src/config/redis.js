@@ -7,7 +7,7 @@ let redis = null;
 
 if (process.env.REDIS_URI) {
   redis = new Redis(process.env.REDIS_URI, {
-    tls: {}, 
+    // tls: {}, 
     maxRetriesPerRequest: 1,      // Try only once per command
     connectTimeout: 3000,         // Fail faster if Redis is unreachable
     lazyConnect: true,            // Only connect when a command is issued

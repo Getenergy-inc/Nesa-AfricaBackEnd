@@ -4,6 +4,8 @@ import User from "../models/postgresql/User.js";
 import Role from "../models/Role.js";
 import { generateOTP, storeOTP, verifyOTP } from "../utils/otpUtils.js";
 import { sendOTPEmail } from "../utils/emailService.js";
+import crypto from "crypto";
+import { sendResetPasswordEmail } from "../utils/ResetEmailService.js";
 
 
 
@@ -92,4 +94,51 @@ export const loginUser = async ({ email, password }) => {
   } catch (error) {
     return { status: 500, message: "Error logging in", error: error.message };
   }
+};
+
+// to change user password service
+
+export const changePassword = async ({ email, oldPassword, newPassword }) => {
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) return { status: 404, message: "User not found" };
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) return { status: 400, message: "Old password is incorrect" };
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+
+    return { status: 200, message: "Password changed successfully" };
+  } catch (error) {
+    return { status: 500, message: "Error changing password", error: error.message };
+  }
+};
+
+// to Reset user password in service
+// Function to reset the password and send the reset email
+
+export const resetPassword = async (email) => {
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) return { status: 404, message: "User not found" };
+
+    // Generate a new password
+    const newPassword = crypto.randomBytes(6).toString("hex");
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password in the database
+    user.password = hashedPassword;
+    await user.save();
+
+    // Send the new password to the user's email
+    await sendResetPasswordEmail(user.email, newPassword);
+
+    return { status: 200, message: "New password sent to email" };
+  } catch (error) {
+    return { status: 500, message: "Error resetting password", error: error.message };
+  }
+
+
 };
