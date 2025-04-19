@@ -16,6 +16,10 @@ const Nomination = sequelize.define("Nomination", {
     type: DataTypes.UUID,
     allowNull: false,
   },
+  sub_category: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   competitive_type: {
     type: DataTypes.STRING,
   },
@@ -25,16 +29,35 @@ const Nomination = sequelize.define("Nomination", {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: true, // temporarily allow nulls
+    allowNull: true,
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: true, // temporarily allow nulls
+    allowNull: true,
     validate: {
       isEmail: true,
     },
   },
-  
+  organization: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  social_media: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  document: {
+    type: DataTypes.STRING, // store file path or URL
+    allowNull: true,
+  },
+  achievements: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 });
 
 export default Nomination;
