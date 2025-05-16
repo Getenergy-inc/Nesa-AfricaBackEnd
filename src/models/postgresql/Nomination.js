@@ -22,7 +22,7 @@ const Nomination = sequelize.define("Nomination", {
   },
   competitive_category_type: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   individual_or_organization: {
     type: DataTypes.STRING,
