@@ -28,8 +28,8 @@ export const createWallet = async ({ user_id, email, phone, full_name }) => {
 
     return {
       status: "success",
-      wallet_id: wallet.wallet_id,
-      balance: wallet.balance,
+      wallet_id: wallet.id,
+      balance: wallet.points_balance,
       created_at: wallet.createdAt,
     };
   } catch (error) {
@@ -44,54 +44,83 @@ export const createWallet = async ({ user_id, email, phone, full_name }) => {
 
 export const getWallets = async () => {
   try {
-    
-    // Fetch wallet List
-    const wallet = await Wallet.findAll();
+    const wallets = await Wallet.findAll();
+
     return {
       status: "success",
-      wallet_id: wallet.wallet_id,
-      balance: wallet.balance,
-      created_at: wallet.createdAt,
+      data: wallets.map(wallet => ({
+        wallet_id: wallet.id,
+        balance: wallet.points_balance,
+        created_at: wallet.createdAt
+      }))
     };
   } catch (error) {
-    return { status: "error", message: "Failed to fetch wallets", error: error.message };
+    return {
+      status: "error",
+      message: "Failed to fetch wallets",
+      error: error.message
+    };
   }
 };
+
 
 
 
 /**
  * Get wallet balance by wallet_id
  */
-export const getWalletBalance = async (wallet_id) => {
-    try {
-      const wallet = await Wallet.findOne({
-        where: { wallet_id },
-        attributes: ["wallet_id", "balance"], // Fetch only the necessary fields
-      });
-  
-      return wallet;
-    } catch (error) {
-      throw new Error("Error fetching wallet balance");
+
+export const getWalletBalance = async (id) => {
+  try {
+    const wallet = await Wallet.findOne({
+      where: {id:id},
+    });
+
+    if (!wallet) {
+      throw new Error("Wallet not found");
     }
-  };
+
+    return wallet;
+  } catch (error) {
+    throw new Error(error.message || "Error fetching wallet balance");
+  }
+};
+
   
   /**
    * Update wallet balance by wallet_id
    */
-  export const updateWalletBalance = async (wallet_id, newBalance) => {
+  export const updateWalletBalance = async (id, newBalance) => {
     try {
-      const wallet = await Wallet.findOne({ where: { wallet_id } });
+      const wallet = await Wallet.findOne({ where: { id } });
       if (!wallet) {
         throw new Error("Wallet not found");
       }
   
       // Update the wallet balance
-      wallet.balance = newBalance;
+      wallet.points_balance = newBalance;
       await wallet.save(); // Save the updated wallet
   
       return wallet;
     } catch (error) {
       throw new Error("Error updating wallet balance");
+    }
+  };
+
+  // delete User Wallet
+
+  export const deleteUserWallet = async (userId) => {
+    try {
+      const wallet = await Wallet.findOne({ where: { user_id: userId } });
+  
+      if (!wallet) {
+        return { status: 404, message: "Wallet not found for this user" };
+      }
+  
+      await wallet.destroy();
+  
+      return { status: 200, message: "Wallet deleted successfully" };
+    } catch (error) {
+      return { status: 500, message: "Error deleting wallet", error: error.message };
     }
   };

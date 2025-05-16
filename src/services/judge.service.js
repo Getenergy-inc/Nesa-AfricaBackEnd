@@ -4,19 +4,37 @@ import Judge from "../models/postgresql/Judge.js";
  * Create a new judge
  */
 export const createJudge = async (data) => {
-  const { application_id, assigned_categories, logs, current_status } = data;
+  const { 
+    full_name, 
+    current_role, 
+    linkedin_profile, 
+    email, 
+    country_of_resident, 
+    reason_of_nomination, 
+    upload_document_or_image 
+  } = data;
 
-  if (!application_id) {
-    throw new Error("Application ID is required");
+  if (!full_name || !email) {
+    throw new Error("Full name and Email are required");
   }
 
-  return await Judge.create({
-    application_id,
-    assigned_categories,
-    logs,
-    current_status,
-  });
+  try {
+    const judge = await Judge.create({
+      full_name,
+      current_role,
+      linkedin_profile,
+      email,
+      country_of_resident,
+      reason_of_nomination,
+      upload_document_or_image,
+    });
+
+    return judge;
+  } catch (error) {
+    throw new Error(error.message || "Error creating judge");
+  }
 };
+
 
 /**
  * Get all judges

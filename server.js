@@ -18,6 +18,8 @@ import "./src/models/postgresql/Ticket.js";
 import "./src/models/postgresql/Volunteer.js";
 import "./src/models/postgresql/Voting.js";
 import "./src/models/postgresql/Wallet.js";
+import "./src/models/associations.js";
+
 
 
 

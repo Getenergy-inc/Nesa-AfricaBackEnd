@@ -1,43 +1,30 @@
 import Referral from "../models/postgresql/Referral.js";
+import generateReferralLink from "../middleware/referralMiddleware.js"
 
 
-
-/**
- * Create a new referral
- */
-export const createReferral = async (data) => {
-  const { referred_by, action, points } = data;
-
-  if (!referred_by) throw new Error("Referrer ID is required");
-  if (!action) throw new Error("Action is required");
-
-  return await Referral.create({
-    referred_by,
-    action,
-    points: points || 0,
-  });
+// Create a new referral
+const createReferr = async (data) => {
+  // Middleware already creates and saves to DB
+  const result = await generateReferralLink(data);
+  const database = await Referral.create(data);
+  return result;
 };
 
-/**
- * Get all referrals
- */
-export const getAllReferrals = async () => {
+
+// Get all referrals
+const getAllReferrals = async () => {
   return await Referral.findAll();
 };
 
-/**
- * Get a referral by ID
- */
-export const getReferralById = async (referral_id) => {
+// Get a referral by ID
+const getReferralById = async (referral_id) => {
   const referral = await Referral.findByPk(referral_id);
   if (!referral) throw new Error("Referral not found");
   return referral;
 };
 
-/**
- * Update a referral
- */
-export const updateReferral = async (referral_id, data) => {
+// Update a referral
+const updateReferral = async (referral_id, data) => {
   const referral = await Referral.findByPk(referral_id);
   if (!referral) throw new Error("Referral not found");
 
@@ -45,13 +32,20 @@ export const updateReferral = async (referral_id, data) => {
   return referral;
 };
 
-/**
- * Delete a referral
- */
-export const deleteReferral = async (referral_id) => {
+// Delete a referral
+const deleteReferral = async (referral_id) => {
   const referral = await Referral.findByPk(referral_id);
   if (!referral) throw new Error("Referral not found");
 
   await referral.destroy();
   return { message: "Referral deleted successfully" };
+};
+
+// Export all functions as default
+export default {
+  createReferr,
+  getAllReferrals,
+  getReferralById,
+  updateReferral,
+  deleteReferral,
 };

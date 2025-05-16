@@ -1,15 +1,30 @@
 import { DataTypes } from "sequelize";
-import {sequelize} from "../../config/database.js";
+import { sequelize } from "../../config/database.js";
 import User from "./User.js";
 
 const Wallet = sequelize.define("Wallet", {
-
-  wallet_id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-  user_id: { type: DataTypes.UUID, references: { model: User, key: "id" } },
-  balance: { type: DataTypes.FLOAT, defaultValue: 0.0 },
-  transaction_history: { type: DataTypes.JSON },
-  referral_source: { type: DataTypes.STRING },
-
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  user_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    unique: true, // ensures one wallet per user
+    references: {
+      model: User,
+      key: "id",
+    },
+    onDelete: "CASCADE",
+  },
+  points_balance: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+}, {
+  tableName: "wallets",
+  timestamps: true, // adds createdAt and updatedAt
 });
 
 export default Wallet;

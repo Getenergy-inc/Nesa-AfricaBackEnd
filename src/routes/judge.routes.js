@@ -16,6 +16,6 @@ router.post("/judge",authenticate, createJudge);
 router.get("/judge-list",authenticate, getAllJudges);
 router.get("/judge/:id", authenticate, getJudgeById);
 router.put("/update/:id",authenticate, updateJudge);
-router.delete("/'delete/:id",authenticate, deleteJudge);
+router.delete("/delete/:id",authenticate, deleteJudge);
 
 export default router;

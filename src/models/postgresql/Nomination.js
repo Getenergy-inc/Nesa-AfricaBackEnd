@@ -20,12 +20,13 @@ const Nomination = sequelize.define("Nomination", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  competitive_type: {
+  competitive_category_type: {
     type: DataTypes.STRING,
+    allowNull: false,
   },
-  status: {
+  individual_or_organization: {
     type: DataTypes.STRING,
-    defaultValue: "pending",
+    allowNull: false,
   },
   name: {
     type: DataTypes.STRING,
@@ -38,25 +39,21 @@ const Nomination = sequelize.define("Nomination", {
       isEmail: true,
     },
   },
-  organization: {
+  linkedin_profile: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  phone: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  social_media: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  document: {
-    type: DataTypes.STRING, // store file path or URL
+  upload_document_or_image: {
+    type: DataTypes.STRING, // file path or URL
     allowNull: true,
   },
   achievements: {
     type: DataTypes.TEXT,
     allowNull: true,
+  },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: "pending",
   },
 });
 

@@ -20,6 +20,9 @@ import referralRoutes from "./routes/referral.routes.js";
 import staffRoutes from "./routes/staff.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
 import volunteerRoutes from "./routes/volunteer.routes.js";
+import judgeApplication from "./routes/applicantRoutes.js";
+
+
 
 
 dotenv.config(); // Load environment variables
@@ -39,6 +42,7 @@ app.use(morgan("dev")); // Logging
 app.use("/api/auths", authRoutes); // Signup & Login routes
 app.use("/api", uploadRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/referral", referralRoutes)
 
 
 
@@ -58,6 +62,7 @@ app.use("/api/referrals", referralRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/volunteers", volunteerRoutes);
+app.use("/api/judge-apply", judgeApplication);
 
 
 

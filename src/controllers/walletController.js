@@ -1,4 +1,4 @@
-import { createWallet, getWalletBalance, updateWalletBalance, getWallets} from "../services/walletService.js";
+import { createWallet, getWalletBalance, updateWalletBalance, getWallets, deleteUserWallet} from "../services/walletService.js";
 
 /**
  * Handle wallet creation request
@@ -50,20 +50,20 @@ export const getWalletController = async (req, res) => {
 /**
  * Get wallet balance
  */
+
 export const getBalance = async (req, res) => {
-    const { wallet_id } = req.params;
+    const { id } = req.params;
   
     try {
-      const wallet = await getWalletBalance(wallet_id);
+      const wallet = await getWalletBalance(id);
       if (!wallet) {
         return res.status(404).json({ status: "error", message: "Wallet not found" });
       }
   
       return res.status(200).json({
         status: "success",
-        wallet_id: wallet.wallet_id,
-        balance: wallet.balance,
-        currency: wallet.currency,
+        wallet_id: wallet.id,
+        balance: wallet.points_balance,
       });
     } catch (error) {
       return res.status(500).json({ status: "error", message: "Error fetching balance", error: error.message });
@@ -74,22 +74,30 @@ export const getBalance = async (req, res) => {
    * Update wallet balance
    */
   export const updateBalance = async (req, res) => {
-    const { wallet_id } = req.params;
-    const { balance } = req.body;
+    const { id } = req.params;
+    const { points_balance } = req.body;
   
     try {
-      const wallet = await updateWalletBalance(wallet_id, balance);
+      const wallet = await updateWalletBalance(id, points_balance);
       if (!wallet) {
         return res.status(404).json({ status: "error", message: "Wallet not found" });
       }
   
       return res.status(200).json({
         status: "success",
-        wallet_id: wallet.wallet_id,
-        balance: wallet.balance,
-        currency: wallet.currency,
+        wallet_id: wallet.id,
+        balance: wallet.points_balance,
       });
     } catch (error) {
       return res.status(500).json({ status: "error", message: "Error updating balance", error: error.message });
     }
+  };
+
+  // delete Wallet Controller
+
+  export const deleteWalletController = async (req, res) => {
+    const { userId } = req.params;
+  
+    const result = await deleteUserWallet(userId);
+    return res.status(result.status).json(result);
   };

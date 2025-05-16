@@ -6,12 +6,11 @@ import { generateOTP, storeOTP, verifyOTP } from "../utils/otpUtils.js";
 import { sendOTPEmail } from "../utils/emailService.js";
 import crypto from "crypto";
 import { sendResetPasswordEmail } from "../utils/ResetEmailService.js";
-
+import Wallet from "../models/postgresql/Wallet.js"; // Import your Wallet model
 
 
 
 export const signupUser = async ({ name, email, password, role }) => {
-
   try {
     // Validate role
     const existingRole = await Role.findOne({ where: { name: role } });
@@ -33,8 +32,18 @@ export const signupUser = async ({ name, email, password, role }) => {
       name,
       email,
       password: hashedPassword,
-      role: existingRole.name, // Store role as a string
+      role: existingRole.name,
     });
+
+    // Check if wallet already exists for this user (shouldn't yet, but good to ensure)
+    const existingWallet = await Wallet.findOne({ where: { user_id: newUser.id } });
+
+    if (!existingWallet) {
+      await Wallet.create({
+        user_id: newUser.id,
+        points_balance: 0,
+      });
+    }
 
     // Generate JWT token
     const token = jwt.sign(
@@ -46,15 +55,18 @@ export const signupUser = async ({ name, email, password, role }) => {
     return {
       status: 201,
       message: "User registered successfully",
-      user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role },
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+      },
       token,
     };
 
   } catch (error) {
     return { status: 500, message: "Error creating user", error: error.message };
   }
-
-
 };
 
 
