@@ -26,7 +26,7 @@ const Nomination = sequelize.define("Nomination", {
   },
   individual_or_organization: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   name: {
     type: DataTypes.STRING,
