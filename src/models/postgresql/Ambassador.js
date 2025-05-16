@@ -9,11 +9,11 @@ const Ambassador = sequelize.define("Ambassador", {
   },
   full_name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   age_range: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   email: {
     type: DataTypes.STRING,
@@ -25,15 +25,15 @@ const Ambassador = sequelize.define("Ambassador", {
   },
   phone_number: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   address: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   country: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   socials: {
     type: DataTypes.STRING,

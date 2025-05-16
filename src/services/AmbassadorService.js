@@ -4,11 +4,11 @@ import Ambassador from "../models/postgresql/Ambassador.js";
  * Create new Ambassador
  */
 export const createAmbassador = async (data) => {
-  const {  email , address, country} = data;
+  // const {  email , address, country} = data;
 
-  if (!email || !address || !country) {
-    throw new Error("Email and Address with Country are required");
-  }
+  // if (!email || !address || !country) {
+  //   throw new Error("Email and Address with Country are required");
+  // }
 
   const ambassador = await Ambassador.create(data);
   return ambassador;
