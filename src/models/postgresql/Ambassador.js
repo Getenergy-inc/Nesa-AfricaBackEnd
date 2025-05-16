@@ -7,11 +7,11 @@ const Ambassador = sequelize.define("Ambassador", {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
-  fullName: {
+  full_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  ageRange: {
+  age_range: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -23,7 +23,7 @@ const Ambassador = sequelize.define("Ambassador", {
       isEmail: true
     }
   },
-  phoneNo: {
+  phone_number: {
     type: DataTypes.STRING,
     allowNull: false
   },
