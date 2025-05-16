@@ -37,7 +37,7 @@ const Ambassador = sequelize.define("Ambassador", {
   },
   socials: {
     type: DataTypes.STRING,
-    allowNull: true  // Example: { instagram: "", twitter: "", linkedin: "" }
+    allowNull: true  
   }
 });
 
