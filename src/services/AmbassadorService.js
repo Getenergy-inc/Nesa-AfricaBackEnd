@@ -10,7 +10,7 @@ export const createAmbassador = async (data) => {
     throw new Error("Email and Address with Country are required");
   }
 
-  const ambassador = await Ambassador.create({ region, type, assigned_KPIs });
+  const ambassador = await Ambassador.create(data);
   return ambassador;
 };
 
