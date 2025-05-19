@@ -12,10 +12,10 @@ const Judge = sequelize.define("Judge", {
     allowNull: false 
   },
   current_role: { 
-    type: DataTypes.JSON 
+    type: DataTypes.STRING 
   },
   linkedin_profile: { 
-    type: DataTypes.JSON 
+    type: DataTypes.STRING 
   },
   email: { 
     type: DataTypes.STRING, 
@@ -23,10 +23,10 @@ const Judge = sequelize.define("Judge", {
     unique: true 
   },
   country: { 
-    type: DataTypes.JSON 
+    type: DataTypes.STRING 
   },
   reason: { 
-    type: DataTypes.JSON 
+    type: DataTypes.STRING
   },
   document: {
     type: DataTypes.STRING, // stores file path or URL
