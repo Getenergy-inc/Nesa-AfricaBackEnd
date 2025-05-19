@@ -9,9 +9,9 @@ export const createJudge = async (data) => {
     current_role, 
     linkedin_profile, 
     email, 
-    country_of_resident, 
-    reason_of_nomination, 
-    upload_document_or_image 
+    country, 
+    reason, 
+    document 
   } = data;
 
   if (!full_name || !email) {
@@ -24,9 +24,9 @@ export const createJudge = async (data) => {
       current_role,
       linkedin_profile,
       email,
-      country_of_resident,
-      reason_of_nomination,
-      upload_document_or_image,
+      country,
+      reason,
+      document,
     });
 
     return judge;
