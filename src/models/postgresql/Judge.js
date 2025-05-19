@@ -22,13 +22,13 @@ const Judge = sequelize.define("Judge", {
     allowNull: false, 
     unique: true 
   },
-  country_of_resident: { 
+  country: { 
     type: DataTypes.JSON 
   },
-  reason_of_nomination: { 
+  reason: { 
     type: DataTypes.JSON 
   },
-  upload_document_or_image: {
+  document: {
     type: DataTypes.STRING, // stores file path or URL
     allowNull: true,
   },

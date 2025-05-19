@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/database.js";
-import User from "../postgresql/User.js";
+import User from "./User.js"; 
 
 const Nomination = sequelize.define("Nomination", {
   id: {
@@ -10,51 +10,52 @@ const Nomination = sequelize.define("Nomination", {
   },
   user_id: {
     type: DataTypes.UUID,
-    references: { model: User, key: "id" },
+    allowNull: false,
+    references: {
+      model: "Users", 
+      key: "id",
+    },
+    onDelete: "CASCADE",
   },
-  category_id: {
-    type: DataTypes.UUID,
+  category: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
-  sub_category: {
+  categoryType: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
-  competitive_category_type: {
+  subCategory: {
     type: DataTypes.STRING,
-    allowNull: true,
-  },
-  individual_or_organization: {
-    type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
   name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  linkedinProfile: {
     type: DataTypes.STRING,
     allowNull: true,
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
+    unique: true,
     validate: {
       isEmail: true,
     },
-  },
-  linkedin_profile: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  upload_document_or_image: {
-    type: DataTypes.STRING, // file path or URL
-    allowNull: true,
   },
   achievements: {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  status: {
+  document: {
     type: DataTypes.STRING,
-    defaultValue: "pending",
+    allowNull: true,
   },
+}, {
+  tableName: "Nominations",
+  timestamps: true,
 });
 
 export default Nomination;
