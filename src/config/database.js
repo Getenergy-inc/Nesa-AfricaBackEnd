@@ -2,7 +2,15 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
+
+
+
 const isProduction = process.env.NODE_ENV === "production";
+
+console.log("ENV", process.env.NODE_ENV);
+console.log("Using SSL?", isProduction);
+console.log("DB URL", process.env.POSTGRES_URI);
+
 
 dotenv.config(); // Load env vars from .env
 
