@@ -1,22 +1,26 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    /**
-     * Add altering commands here.
-     *
-     * Example:
-     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     */
+  async up(queryInterface, Sequelize) {
+    await queryInterface.addColumn('judges', 'country', {
+      type: Sequelize.STRING,
+      allowNull: true,
+    });
+
+    await queryInterface.addColumn('judges', 'reason', {
+      type: Sequelize.STRING,
+      allowNull: true,
+    });
+
+    await queryInterface.addColumn('judges', 'document', {
+      type: Sequelize.STRING,
+      allowNull: true,
+    });
   },
 
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+  async down(queryInterface, Sequelize) {
+    await queryInterface.removeColumn('judges', 'country');
+    await queryInterface.removeColumn('judges', 'reason');
+    await queryInterface.removeColumn('judges', 'document');
   }
 };
