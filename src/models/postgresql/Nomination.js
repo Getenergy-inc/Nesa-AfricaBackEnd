@@ -39,7 +39,7 @@ const Nomination = sequelize.define("Nomination", {
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     unique: true,
     validate: {
       isEmail: true,
