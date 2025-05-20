@@ -17,11 +17,6 @@ class NominationService {
         throw new Error("Invalid email format.");
       }
 
-      // Check for existing nomination with same email
-      const existing = await Nomination.findOne({ where: { email: data.email } });
-      if (existing) {
-        throw new Error("A nomination with this email already exists.");
-      }
 
       // Create nomination
       const nomination = await Nomination.create(data);
