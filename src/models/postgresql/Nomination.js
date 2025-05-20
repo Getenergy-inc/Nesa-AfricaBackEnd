@@ -23,15 +23,15 @@ const Nomination = sequelize.define("Nomination", {
   },
   categoryType: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   subCategory: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   linkedinProfile: {
     type: DataTypes.STRING,
