@@ -6,7 +6,7 @@ import Judge from "../models/postgresql/Judge.js";
 export const createJudge = async (data) => {
   try {
     // Basic validation
-    if (!data.name || !data.email) {
+    if (!data.full_name || !data.email) {
       throw new Error("Name and email are required");
     }
 
