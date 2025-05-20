@@ -1,11 +1,41 @@
 import Nomination from "../models/postgresql/Nomination.js";
 
 class NominationService {
-  
+
+
   // Create a new nomination
   static async createNomination(data) {
-    return await Nomination.create(data);
+    try {
+      // Validate required fields
+      if (!data.name || !data.email) {
+        throw new Error("Name and email are required.");
+      }
+
+      // Check if email is valid (Sequelize will also validate but this gives early feedback)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        throw new Error("Invalid email format.");
+      }
+
+      // Check for existing nomination with same email
+      const existing = await Nomination.findOne({ where: { email: data.email } });
+      if (existing) {
+        throw new Error("A nomination with this email already exists.");
+      }
+
+      // Create nomination
+      const nomination = await Nomination.create(data);
+      return nomination;
+
+    } catch (error) {
+      // Sequelize unique constraint errors
+      if (error.name === "SequelizeUniqueConstraintError") {
+        throw new Error("Email must be unique.");
+      }
+      throw new Error(error.message || "Error creating nomination.");
+    }
   }
+
 
   // Get all nominations
   static async getAllNominations() {

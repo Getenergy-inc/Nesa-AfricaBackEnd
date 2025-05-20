@@ -4,7 +4,34 @@ import Ambassador from "../models/postgresql/Ambassador.js";
  * Create new Ambassador
  */
 export const createAmbassador = async (data) => {
-  return await Ambassador.create(data);
+  try {
+    // Validate required fields
+    if (!data.full_name || !data.email) {
+      throw new Error("Full name and email are required.");
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      throw new Error("Invalid email format.");
+    }
+
+    // Check for duplicate email
+    const existingAmbassador = await Ambassador.findOne({ where: { email: data.email } });
+    if (existingAmbassador) {
+      throw new Error("An ambassador with this email already exists.");
+    }
+
+    // Create ambassador
+    const ambassador = await Ambassador.create(data);
+    return ambassador;
+
+  } catch (error) {
+    if (error.name === "SequelizeUniqueConstraintError") {
+      throw new Error("Email must be unique.");
+    }
+    throw new Error(error.message || "Error creating ambassador.");
+  }
 };
 
 /**

@@ -4,17 +4,34 @@ import Judge from "../models/postgresql/Judge.js";
  * Create a new judge
  */
 export const createJudge = async (data) => {
-  
   try {
+    // Basic validation
+    if (!data.name || !data.email) {
+      throw new Error("Name and email are required");
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      throw new Error("Invalid email format");
+    }
+
+    // Check for duplicate email
+    const existingJudge = await Judge.findOne({ where: { email: data.email } });
+    if (existingJudge) {
+      throw new Error("A judge with this email already exists");
+    }
+
+    // Create judge
     const judge = await Judge.create(data);
 
-    console.log("judge :" + judge)
-
+    console.log("judge:", judge);
     return judge;
+
   } catch (error) {
     throw new Error(error.message || "Error creating judge");
   }
 };
+
 
 
 /**
