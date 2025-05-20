@@ -14,20 +14,16 @@ export const createJudge = async (data) => {
     document 
   } = data;
 
+  console.log(data)
+
   if (!full_name || !email) {
     throw new Error("Full name and Email are required");
   }
 
   try {
-    const judge = await Judge.create({
-      full_name,
-      current_role,
-      linkedin_profile,
-      email,
-      country,
-      reason,
-      document,
-    });
+    const judge = await Judge.create(data);
+
+    console.log("judge :" + judge)
 
     return judge;
   } catch (error) {
