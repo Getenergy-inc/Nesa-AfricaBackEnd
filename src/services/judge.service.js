@@ -4,22 +4,7 @@ import Judge from "../models/postgresql/Judge.js";
  * Create a new judge
  */
 export const createJudge = async (data) => {
-  const { 
-    full_name, 
-    current_role, 
-    linkedin_profile, 
-    email, 
-    country, 
-    reason, 
-    document 
-  } = data;
-
-  console.log(data)
-
-  if (!full_name || !email) {
-    throw new Error("Full name and Email are required");
-  }
-
+  
   try {
     const judge = await Judge.create(data);
 
