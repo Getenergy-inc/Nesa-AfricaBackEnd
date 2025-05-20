@@ -19,7 +19,7 @@ const Nomination = sequelize.define("Nomination", {
   },
   category: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   categoryType: {
     type: DataTypes.STRING,
