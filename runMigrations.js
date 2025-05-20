@@ -1,7 +1,5 @@
 import { sequelize } from './src/config/database.js';
-import pkg from 'umzug';
-
-const { Umzug, SequelizeStorage } = pkg;
+import { Umzug, SequelizeStorage } from 'umzug';
 
 
 const runMigrations = async () => {
