@@ -2,17 +2,13 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
-
-
+dotenv.config(); // Load env vars from .env
 
 const isProduction = process.env.NODE_ENV === "production";
 
 console.log("ENV", process.env.NODE_ENV);
 console.log("Using SSL?", isProduction);
 console.log("DB URL", process.env.POSTGRES_URI);
-
-
-dotenv.config(); // Load env vars from .env
 
 const databaseUrl = process.env.POSTGRES_URI;
 
@@ -30,6 +26,9 @@ export const sequelize = new Sequelize(databaseUrl, {
       rejectUnauthorized: false // Allow self-signed certs
     }
   } : {},
+  dialectModuleOptions: {
+    family: 4 // 👈 Force IPv4 to prevent ENETUNREACH via IPv6
+  }
 });
 
 // Connect and sync
