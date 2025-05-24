@@ -1,31 +1,56 @@
 import NominationService from "../services/nominationService.js";
 import { sendNominationEmail } from "../utils/NominesEmailUtility.js"; // adjust path as needed
+import { uploadImageToCloudinary } from "../utils/cloudinaryUploader.js"; // create this helper
+import fs from "fs/promises";
+import Joi from "joi";
 
+// Joi schema for validation
+const nominationSchema = Joi.object({
+  name: Joi.string().min(1).required(),
+  email: Joi.string().email().required(),
+  category: Joi.string().optional(),
+  categoryType: Joi.string().optional(),
+  subCategory: Joi.string().optional(),
+  linkedinProfile: Joi.string().optional(),
+  achievements: Joi.string().optional(),
+  // other fields as needed
+});
 
 class NominationController {
-  
   // Create a nomination
   static async create(req, res) {
     try {
-      const nomination = await NominationService.createNomination(req.body);
-  
-      // Extract nominee details (update keys based on your actual req.body structure)
-      const nomineeEmail = req.body.email; // assuming nominee email is provided
-      const nomineeName = req.body.name || "Nominee"; // fallback to 'Nominee' if name is not provided
-  
-      // Send the nomination email
-      if (nomineeEmail) {
-        await sendNominationEmail(nomineeEmail, nomineeName, nomination.id);
-        console.log("email send to Nomines...!")
+      const { error, value } = nominationSchema.validate(req.body);
+      if (error) return res.status(400).json({ message: error.details[0].message });
+
+      const documentUrls = [];
+
+      if (req.files && req.files.length > 0) {
+        for (const file of req.files) {
+          const url = await uploadImageToCloudinary(file.path, "nominees");
+          documentUrls.push(url);
+          await fs.unlink(file.path); // cleanup
+        }
       }
-  
+
+      const nominationPayload = {
+        ...value,
+        documents: documentUrls, // Save as array
+      };
+
+      const nomination = await NominationService.createNomination(nominationPayload);
+
+      if (nominationPayload.email) {
+        await sendNominationEmail(nominationPayload.email, nominationPayload.name, nomination.id);
+      }
+
       return res.status(201).json({ message: "Nomination created", nomination });
     } catch (error) {
-      console.error("Error creating nomination:", error);
       return res.status(500).json({ error: error.message });
     }
+
   }
-  
+
 
   // Get all nominations
   static async getAll(req, res) {
@@ -49,14 +74,47 @@ class NominationController {
     }
   }
 
-  // Update nomination
+  // Update nomination (with optional image upload)
   static async update(req, res) {
     try {
-      const updatedNomination = await NominationService.updateNomination(req.params.id, req.body);
-      if (!updatedNomination) return res.status(404).json({ message: "Nomination not found" });
+      // Allow partial update - make all schema fields optional
+      const updateSchema = nominationSchema.fork(
+        Object.keys(nominationSchema.describe().keys),
+        (schema) => schema.optional()
+      );
 
-      return res.status(200).json({ message: "Nomination updated", updatedNomination });
+      const { error, value } = updateSchema.validate(req.body);
+      if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+      }
+
+      let updatedPayload = { ...value };
+
+      // Handle multiple document uploads
+      if (req.files && req.files.length > 0) {
+        const uploadedDocs = [];
+
+        for (const file of req.files) {
+          const url = await uploadImageToCloudinary(file.path);
+          uploadedDocs.push(url);
+          await fs.unlink(file.path); // clean up temp file
+        }
+
+        updatedPayload.documents = uploadedDocs; // Save array of URLs
+      }
+
+      const updatedNomination = await NominationService.updateNomination(req.params.id, updatedPayload);
+
+      if (!updatedNomination) {
+        return res.status(404).json({ message: "Nomination not found" });
+      }
+
+      return res.status(200).json({
+        message: "Nomination updated successfully",
+        updatedNomination,
+      });
     } catch (error) {
+      console.error("Update error:", error);
       return res.status(500).json({ error: error.message });
     }
   }
