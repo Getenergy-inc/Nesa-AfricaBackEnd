@@ -39,7 +39,7 @@ app.use(morgan("dev")); // Logging
 
 // Public Routes
 app.use("/api/auths", authRoutes); // Signup & Login routes
-app.use("/api", uploadRoutes);
+// app.use("/api", uploadRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/referral", referralRoutes)
 
