@@ -1,6 +1,6 @@
 import NominationService from "../services/nominationService.js";
 import { sendNominationEmail } from "../utils/NominesEmailUtility.js"; // adjust path as needed
-import { uploadImageToCloudinary } from "../utils/cloudinaryUploader.js"; // create this helper
+import { uploadImageToCloudinary } from "../utils/cloudinary.js"; // create this helper
 import fs from "fs/promises";
 import Joi from "joi";
 
