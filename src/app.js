@@ -5,7 +5,6 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";  // Authentication routes
 import userRoutes from "./routes/user.routes.js";  // User profile & protected routes
-import uploadRoutes from "./routes/uploadRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 import nominationRoutes from "./routes/nominationRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
