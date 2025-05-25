@@ -6,6 +6,7 @@ import Joi from "joi";
 
 // Joi schema for validation
 const nominationSchema = Joi.object({
+  category_id: Joi.string().optional(),  // or .required() if needed
   name: Joi.string().min(1).required(),
   email: Joi.string().email().required(),
   category: Joi.string().optional(),
@@ -13,7 +14,7 @@ const nominationSchema = Joi.object({
   subCategory: Joi.string().optional(),
   linkedinProfile: Joi.string().optional(),
   achievements: Joi.string().optional(),
-  // other fields as needed
+  // add other fields as needed
 });
 
 class NominationController {
