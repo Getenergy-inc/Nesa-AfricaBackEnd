@@ -14,8 +14,9 @@ const nominationSchema = Joi.object({
   sub_category: Joi.string().optional(),
   linkedinProfile: Joi.string().optional(),
   achievements: Joi.string().optional(),
+  status: Joi.string().optional(),
   // add other fields as needed
-});
+}).unknown(true);
 
 class NominationController {
   // Create a nomination
