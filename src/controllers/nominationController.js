@@ -25,19 +25,29 @@ class NominationController {
       const { error, value } = nominationSchema.validate(req.body);
       if (error) return res.status(400).json({ message: error.details[0].message });
 
+      // Upload files to cloud and get URLs
       const documentUrls = [];
-
       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           const url = await uploadImageToCloudinary(file.path, "nominees");
           documentUrls.push(url);
-          await fs.unlink(file.path); // cleanup
+          await fs.unlink(file.path);
         }
       }
 
+      // Map incoming snake_case keys to camelCase expected by Sequelize
       const nominationPayload = {
-        ...value,
-        documents: documentUrls, // Save as array
+        name: value.name,
+        email: value.email,
+        category: value.category || null,
+        categoryType: value.competitive_type || null,
+        subCategory: value.sub_category || null,
+        linkedinProfile: value.linkedinProfile || null,
+        achievements: value.achievements || null,
+        status: value.status || null,
+        document: documentUrls.length > 0 ? documentUrls[0] : null,  // take first document URL if any
+        // optionally add user_id if available from req.user
+        user_id: req.user?.id || null,
       };
 
       const nomination = await NominationService.createNomination(nominationPayload);
@@ -50,8 +60,8 @@ class NominationController {
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
-
   }
+
 
 
   // Get all nominations
