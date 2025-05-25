@@ -10,7 +10,7 @@ const nominationSchema = Joi.object({
   name: Joi.string().min(1).required(),
   email: Joi.string().email().required(),
   category: Joi.string().optional(),
-  categoryType: Joi.string().optional(),
+  competitive_type: Joi.string().optional(),
   sub_category: Joi.string().optional(),
   linkedinProfile: Joi.string().optional(),
   achievements: Joi.string().optional(),
