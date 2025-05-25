@@ -11,7 +11,7 @@ const nominationSchema = Joi.object({
   email: Joi.string().email().required(),
   category: Joi.string().optional(),
   categoryType: Joi.string().optional(),
-  subCategory: Joi.string().optional(),
+  sub_category: Joi.string().optional(),
   linkedinProfile: Joi.string().optional(),
   achievements: Joi.string().optional(),
   // add other fields as needed
