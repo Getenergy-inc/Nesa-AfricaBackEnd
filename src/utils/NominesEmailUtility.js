@@ -21,7 +21,7 @@ oauth2Client.setCredentials({
 });
 
 // Send nomination email function
-export const sendNominationEmail = async (to, nomineeName, nominationId) => {
+export const sendNominationEmail = async (to, nomineeName, nominationId, signupLink) => {
   try {
     const accessTokenResponse = await oauth2Client.getAccessToken();
     const accessToken = accessTokenResponse?.token;
@@ -38,8 +38,8 @@ export const sendNominationEmail = async (to, nomineeName, nominationId) => {
       },
     });
 
-    const acceptUrl = `https://nesa-test-4alu.vercel.app/nomineesignup1`;
-    const rejectUrl = `https://yourdomain.com/nomination/reject/${nominationId}`;
+    // const acceptUrl = `https://nesa-test-4alu.vercel.app/nomineesignup1`;
+    // const rejectUrl = `https://yourdomain.com/nomination/reject/${nominationId}`;
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; background-color: #191307; color: #ffffff; padding: 20px;">
@@ -53,22 +53,23 @@ export const sendNominationEmail = async (to, nomineeName, nominationId) => {
       <div style="font-family: Arial, sans-serif; background-color:rgb(241, 240, 238); color:rgb(14, 13, 13); padding: 20px;">
         <!-- Intro Text -->
         <div style="margin-top: 30px; padding-top: 8px;">
-          <h4 style="margin-bottom: 10px;">Congratulations, You have been nominated in the NESA Awards 2024 😊🎉</h4>
+          <h4 style="margin-bottom: 10px;">Congratulations, You have been approved to be a judge for the NESA Awards 2025 😊🎉</h4>
           <p style="line-height: 1.6;">
             Dear ${nomineeName},<br><br>
-           Congratulations! We are pleased to inform you that you have been nominated for the prestigious New Education Standard Awards 2025 in recognition of your outstanding contributions to education.<br><br> 
-           Your dedication to advancing learning opportunities and fostering educational development has made a significant impact, and this nomination is a testament to your remarkable efforts.<br><br>
+            Congratulations! We are pleased to inform you that your application to become a judge for the prestigious New Education Standard Awards 2025 has been approved.
+            Your expertise and dedication to advancing education make you an invaluable addition to our panel of judges.<br><br>
 
-           To officially accept your nomination and provide more details about your contributions to education, please click the link below :
+            As a judge, you will play a key role in recognizing and celebrating outstanding contributions to education across Africa, in order to promote inclusive and equitable quality education for all.<br><br>
 
+            To confirm your participation and receive further details about your role, please click the link below :
           </p>
           <div style="margin: 20px 0;">
-            <a href="${acceptUrl}" style="color: green; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;"> ✅ Accept Your Nomination Here</a>
+            <a href="${signupLink}" style="color: green; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;"> ✅ Confirm Your Role as a Judge </a>
           </div>
 
           <p style="line-height: 1.6;">
-           We appreciate your continued efforts in shaping the future of education and look forward to celebrating your achievements.<br><br> 
-           Should you have any questions, feel free to reach out.
+             We are excited to collaborate with you and look forward to your insights in shaping this landmark event.<br><br> 
+             Should you have any questions, feel free to reach out.
           </p>
 
         </div>
@@ -80,7 +81,7 @@ export const sendNominationEmail = async (to, nomineeName, nominationId) => {
 
         <!-- About Section -->
         <div style="padding: 20px;">
-          <h4>Curious about what the NESA Awards stands for, well you are not alone, here is what NESA stands for and our mission.</h4>
+          <h4>Curious about what the NESA Awards stands for? Here is what NESA stands for and our mission</h4>
           <p style="line-height: 1.6;">
             New Education Standard Award Africa (NESA Africa) is a prestigious initiative committed to recognizing and celebrating excellence, innovation,
             and impactful contributions in education across Africa. Established to set new benchmarks in education, the awards serve as a catalyst for change,

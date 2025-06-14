@@ -14,16 +14,17 @@ console.log("ENV:", process.env.NODE_ENV);
 console.log("Using SSL?", isProduction);
 console.log("DB URL:", databaseUrl);
 
-// ✅ Use pooler with SSL (required for Supabase)
-export const sequelize = new Sequelize(databaseUrl, {
+const sequelize = new Sequelize(databaseUrl, {
   dialect: "postgres",
   logging: false,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  }
+  dialectOptions: isProduction
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }
+    : {},
 });
 
 export const connectDB = async () => {
@@ -43,3 +44,5 @@ export const connectDB = async () => {
     console.error("❌ Database connection error:", error);
   }
 };
+
+export { sequelize };

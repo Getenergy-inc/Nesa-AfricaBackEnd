@@ -4,17 +4,44 @@ import { sequelize } from "../../config/database.js";
 
 
 const User = sequelize.define("User", {
-
-  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-  name: { type: DataTypes.STRING, allowNull: false },
-  email: { type: DataTypes.STRING, allowNull: false, unique: true },
-  password: { type: DataTypes.STRING, allowNull: false },
-  role: { type: DataTypes.STRING, allowNull: false },  // Store role as string
-  referral: { type: DataTypes.STRING },
-  region: { type: DataTypes.STRING },
-  KYC: { type: DataTypes.BOOLEAN, defaultValue: false },
-  GFA_wallet_id: { type: DataTypes.UUID },
-
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  fullName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  nomineeType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  stateOrRegion: {
+    type: DataTypes.STRING
+  },
+  image: {
+    type: DataTypes.STRING // Can store file path or URL
+  },
+  phoneNumber: {
+    type: DataTypes.STRING
+  },
+}, {
+  tableName: "Users", // optional: name of the table
+  timestamps: true
 });
 
 

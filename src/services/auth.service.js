@@ -9,35 +9,45 @@ import { sendResetPasswordEmail } from "../utils/ResetEmailService.js";
 import Wallet from "../models/postgresql/Wallet.js"; // Import your Wallet model
 
 
-
-export const signupUser = async ({ name, email, password, role }) => {
+export const signupUser = async ({ fullName, email, password, role , nomineeType, stateOrRegion, image, phoneNumber}) => {
   try {
-    // Validate role
-    const existingRole = await Role.findOne({ where: { name: role } });
+    // Use provided role or fallback to "General User"
+    const roleToAssign = role || "General User";
+
+    // Check if the role exists in the Role table
+    let existingRole = await Role.findOne({ where: { name: roleToAssign } });
+
+    // If provided role doesn't exist, fallback to "General User"
     if (!existingRole) {
-      return { status: 400, message: "Invalid role selected" };
+      existingRole = await Role.findOne({ where: { name: "General User" } });
+      if (!existingRole) {
+        return { status: 400, message: "Default role 'General User' not found in database" };
+      }
     }
 
-    // Check if user exists
+    // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return { status: 400, message: "Email is already registered" };
     }
 
-    // Hash password
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Create user with the valid role
     const newUser = await User.create({
-      name,
+      fullName,
       email,
+      nomineeType,
+      stateOrRegion,
+      image,
+      phoneNumber,
       password: hashedPassword,
       role: existingRole.name,
     });
 
-    // Check if wallet already exists for this user (shouldn't yet, but good to ensure)
+    // Create wallet if not already present
     const existingWallet = await Wallet.findOne({ where: { user_id: newUser.id } });
-
     if (!existingWallet) {
       await Wallet.create({
         user_id: newUser.id,
@@ -57,9 +67,13 @@ export const signupUser = async ({ name, email, password, role }) => {
       message: "User registered successfully",
       user: {
         id: newUser.id,
-        name: newUser.name,
+        fullName: newUser.fullName,
         email: newUser.email,
         role: newUser.role,
+        nomineeType: newUser.nomineeType,
+        stateOrRegion: newUser.stateOrRegion,
+        image: newUser.image,
+        phoneNumber:newUser.phoneNumber
       },
       token,
     };
@@ -68,7 +82,6 @@ export const signupUser = async ({ name, email, password, role }) => {
     return { status: 500, message: "Error creating user", error: error.message };
   }
 };
-
 
 
 // login Service logic

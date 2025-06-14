@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/database.js";
-import User from "./User.js"; 
+import User from "./User.js";
 
 const Nomination = sequelize.define("Nomination", {
   id: {
@@ -12,7 +12,7 @@ const Nomination = sequelize.define("Nomination", {
     type: DataTypes.UUID,
     allowNull: true,
     references: {
-      model: "Users", 
+      model: "Users",
       key: "id",
     },
     onDelete: "CASCADE",
@@ -40,10 +40,19 @@ const Nomination = sequelize.define("Nomination", {
   email: {
     type: DataTypes.STRING,
     allowNull: true,
-    unique: true,
+    unique: false,
     validate: {
       isEmail: true,
     },
+  },
+  status: {
+    type: DataTypes.ENUM("pending", "accepted"),
+    defaultValue: "pending",
+    allowNull: false,
+  },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   achievements: {
     type: DataTypes.TEXT,

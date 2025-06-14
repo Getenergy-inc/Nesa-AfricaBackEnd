@@ -3,6 +3,8 @@ import { sendNominationEmail } from "../utils/NominesEmailUtility.js"; // adjust
 import { uploadImageToCloudinary } from "../utils/cloudinary.js"; // create this helper
 import fs from "fs/promises";
 import Joi from "joi";
+import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
 // Joi schema for validation
 const nominationSchema = Joi.object({
@@ -25,7 +27,7 @@ class NominationController {
       const { error, value } = nominationSchema.validate(req.body);
       if (error) return res.status(400).json({ message: error.details[0].message });
 
-      // Upload files to cloud and get URLs
+      // Upload document(s)
       const documentUrls = [];
       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
@@ -35,28 +37,37 @@ class NominationController {
         }
       }
 
-      // Map incoming snake_case keys to camelCase expected by Sequelize
+      // Generate a secure token (valid for 7 days)
+      const token = jwt.sign(
+        { email: value.email, nominationId: uuidv4() }, // Use uuid if nomination hasn't been created yet
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+
       const nominationPayload = {
         name: value.name,
         email: value.email,
         category: value.category || null,
-        categoryType: value.competitive_type || null,
-        subCategory: value.sub_category || null,
+        categoryType: value.competitiveType || null,
+        subCategory: value.subCategory || null,
         linkedinProfile: value.linkedinProfile || null,
         achievements: value.achievements || null,
-        status: value.status || null,
-        document: documentUrls.length > 0 ? documentUrls[0] : null,  // take first document URL if any
-        // optionally add user_id if available from req.user
+        status: "pending",
+        document: documentUrls.length > 0 ? documentUrls[0] : null,
+        token, // 🔐 Save the token
         user_id: req.user?.id || null,
       };
 
       const nomination = await NominationService.createNomination(nominationPayload);
 
       if (nominationPayload.email) {
-        await sendNominationEmail(nominationPayload.email, nominationPayload.name, nomination.id);
+        // 👇 Embed token in the signup link
+        const signupLink = `https://nesa-test-4alu.vercel.app/nomineesignup1`;
+        await sendNominationEmail(nominationPayload.email, nominationPayload.name, signupLink);
       }
 
       return res.status(201).json({ message: "Nomination created", nomination });
+
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }

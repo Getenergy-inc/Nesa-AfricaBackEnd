@@ -20,6 +20,8 @@ import staffRoutes from "./routes/staff.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
 import volunteerRoutes from "./routes/volunteer.routes.js";
 import judgeApplication from "./routes/applicantRoutes.js";
+import adminNominationRoutes from "./routes/adminNominationRoutes.js"
+import nominationFormRoutes from "./routes/nominationForm.routes.js";
 
 
 
@@ -62,6 +64,11 @@ app.use("/api/staffs", staffRoutes);
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/volunteers", volunteerRoutes);
 app.use("/api/judge-apply", judgeApplication);
+app.use("/api/nomination-forms", nominationFormRoutes);
+
+// admin api route
+
+app.use("/api/dashboard", adminNominationRoutes);
 
 
 

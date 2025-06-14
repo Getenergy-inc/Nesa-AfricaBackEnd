@@ -1,12 +1,15 @@
 import express from "express";
-import * as controller from "../controllers/applicantController.js";
+import upload from "../config/multer.js";
+import ApplicantController from "../controllers/applicantController.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/applicant", controller.create);
-router.get("/applicants", controller.findAll);
-router.get("/applicants/:id", controller.findOne);
-router.put("/update/:id", controller.update);
-router.delete("/delete/:id", controller.remove);
+// Use upload.any() to accept files from any field names
+router.post("/applicant", authenticate, upload.any(), ApplicantController.create);
+// router.get("/applicants", authenticate, ApplicantController.findAll);
+// router.get("/applicants/:id", authenticate, ApplicantController.findOne);
+// router.put("/update/:id", authenticate, upload.any(), ApplicantController.update);
+// router.delete("/delete/:id", authenticate, ApplicantController.remove);
 
 export default router;

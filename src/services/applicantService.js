@@ -51,3 +51,13 @@ export const deleteApplicant = async (id) => {
   await applicant.destroy();
   return { message: "Judge application deleted successfully" };
 };
+
+const ApplicantService = {
+  createApplicant,
+  getAllApplicants,
+  getApplicantById,
+  updateApplicant,
+  deleteApplicant,
+};
+
+export default ApplicantService;

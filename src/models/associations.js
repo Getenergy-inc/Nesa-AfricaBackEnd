@@ -3,12 +3,11 @@ import WalletTransaction from "./postgresql/WalletTransaction.js";
 import Referral from "./postgresql/Referral.js";
 import Nomination from "./postgresql/Nomination.js";
 import User from "./postgresql/User.js";
+import NominationForm from './postgresql/NominationForm.js';
 
 
 
 // const someReferralId = Referral.referral_id;
-
-// Associations
 Wallet.hasMany(WalletTransaction, {
   foreignKey: "wallet_id",
   as: "transactions",
@@ -19,10 +18,24 @@ WalletTransaction.belongsTo(Wallet, {
   as: "wallet",
 });
 
+// ✅ User → Wallet (new association with cascade delete)
+User.hasOne(Wallet, {
+  foreignKey: "user_id",
+  as: "wallet",
+  onDelete: "CASCADE",
+  hooks: true,
+});
+
+Wallet.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+  onDelete: "CASCADE",
+});
+
 // Referral → User (referrer)
 Referral.belongsTo(User, {
   foreignKey: "referred_by",
-  as: "referrer", // alias used in query includes
+  as: "referrer",
 });
 
 User.hasMany(Referral, {
@@ -30,17 +43,33 @@ User.hasMany(Referral, {
   as: "referrals",
 });
 
-
-  // Associations for Nomination and User
-Nomination.belongsTo(User, { foreignKey: "user_id" });  // Each nomination belongs to one user
-User.hasMany(Nomination, { foreignKey: "user_id" });  // One user can have many nominations
-
+// Nomination → User
+Nomination.belongsTo(User, { 
+  foreignKey: "user_id" 
+});
+User.hasMany(Nomination, { 
+  foreignKey: "user_id" 
   
+});
+
+Nomination.hasMany(NominationForm, {
+  foreignKey: "nomination_id",
+  as: "forms",
+  onDelete: "CASCADE"
+});
+
+// Each NominationForm belongs to a single Nomination
+NominationForm.belongsTo(Nomination, {
+  foreignKey: "nomination_id",
+  as: "nomination"
+});
+
 
 export {
   Wallet,
   WalletTransaction,
   Referral,
   Nomination,
+  NominationForm,
   User,
 };

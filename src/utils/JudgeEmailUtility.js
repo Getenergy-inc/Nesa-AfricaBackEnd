@@ -21,7 +21,7 @@ oauth2Client.setCredentials({
 });
 
 // Send nomination email function
-export const sendNominationEmail = async (to, nomineeName, nominationId) => {
+export const sendJudgeEmail = async (to, nomineeName, nominationId, signupLink) => {
   try {
     const accessTokenResponse = await oauth2Client.getAccessToken();
     const accessToken = accessTokenResponse?.token;
@@ -38,8 +38,8 @@ export const sendNominationEmail = async (to, nomineeName, nominationId) => {
       },
     });
 
-    const acceptUrl = `https://nesa-test-4alu.vercel.app/nomineesignup1`;
-    const rejectUrl = `https://yourdomain.com/nomination/reject/${nominationId}`;
+    // const acceptUrl = `https://nesa-test-4alu.vercel.app/nomineesignup1`;
+    // const rejectUrl = `https://yourdomain.com/nomination/reject/${nominationId}`;
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; background-color: #191307; color: #ffffff; padding: 20px;">
@@ -64,7 +64,7 @@ export const sendNominationEmail = async (to, nomineeName, nominationId) => {
             To confirm your participation and receive further details about your role, please click the link below :
           </p>
           <div style="margin: 20px 0;">
-            <a href="${acceptUrl}" style="color: green; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;"> ✅ Confirm Your Role as a Judge </a>
+            <a href="${signupLink}" style="color: green; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;"> ✅ Confirm Your Role as a Judge </a>
           </div>
 
           <p style="line-height: 1.6;">

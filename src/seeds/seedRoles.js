@@ -2,12 +2,10 @@ import { Role } from "../models/index.js"; // Import from centralized model file
 
 export const seedRoles = async () => {
   const roles = [
-    { name: "Super Admin", description: "Full system access" },
-    { name: "Department Head", description: "Manage department data" },
-    { name: "Judge", description: "Access to scoring panel" },
-    { name: "Ambassador", description: "Regional data & events" },
-    { name: "Visitor", description: "Basic CMS access, voting" },
-    { name: "Volunteer", description: "Community tasks & dashboards" },
+    { name: "Admin", description: "Full access to manage the platform" },
+    { name: "General User", description: "Standard access to platform features" },
+    { name: "Sponsor", description: "Access to sponsor features and insights" },
+    { name: "Nominee", description: "Access to nomination features and profile" },
   ];
 
   for (const role of roles) {
