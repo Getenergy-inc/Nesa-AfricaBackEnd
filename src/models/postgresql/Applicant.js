@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/database.js";
+import Judge from "./Judge.js";
 
 const Applicant = sequelize.define("Applicant", {
   id: {
@@ -30,6 +31,25 @@ const Applicant = sequelize.define("Applicant", {
   },
   motivation_statement: {
     type: DataTypes.TEXT
+  },
+  status: {
+    type: DataTypes.ENUM("pending", "accepted", "denied"),
+    defaultValue: "pending",
+    allowNull: false,
+  },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  judge_id: { // ✅ Foreign key mapping to Applicant
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: "Judges", // Table name for Judge
+      key: "id"
+    },
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE"
   },
   education_background: {
     type: DataTypes.TEXT

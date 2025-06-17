@@ -22,6 +22,7 @@ import volunteerRoutes from "./routes/volunteer.routes.js";
 import judgeApplication from "./routes/applicantRoutes.js";
 import adminNominationRoutes from "./routes/adminNominationRoutes.js"
 import nominationFormRoutes from "./routes/nominationForm.routes.js";
+import adminJudgeRoutes from "./routes/adminJudgeRoute.js";
 
 
 
@@ -69,6 +70,7 @@ app.use("/api/nomination-forms", nominationFormRoutes);
 // admin api route
 
 app.use("/api/dashboard", adminNominationRoutes);
+app.use("/api/dashboard", adminJudgeRoutes);
 
 
 

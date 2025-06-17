@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/database.js";
 import User from "./User.js";
+import NominationForm from "./NominationForm.js";
 
 const Nomination = sequelize.define("Nomination", {
   id: {
@@ -53,6 +54,16 @@ const Nomination = sequelize.define("Nomination", {
   token: {
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  nomination_id: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: "NominationForms",
+      key: "id",
+    },
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE"
   },
   achievements: {
     type: DataTypes.TEXT,

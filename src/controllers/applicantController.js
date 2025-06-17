@@ -112,7 +112,7 @@ class ApplicantController {
 
       // Send confirmation email with token if needed
       if (value.email) {
-        const confirmationLink = `https://nesa-test-4alu.vercel.app/nomineesignup1?token=${token}`;
+        const confirmationLink = `https://nesa-test-4alu.vercel.app/nomineesignup1`;
         await sendJudgeEmail(value.email, value.full_name, confirmationLink);
       }
 

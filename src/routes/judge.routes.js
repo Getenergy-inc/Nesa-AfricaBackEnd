@@ -12,7 +12,7 @@ import {
 
 const router = express.Router();
 
-router.post("/judge",authenticate, createJudge);
+router.post("/create",authenticate, createJudge);
 router.get("/judge-list",authenticate, getAllJudges);
 router.get("/judge/:id", authenticate, getJudgeById);
 router.put("/update/:id",authenticate, updateJudge);

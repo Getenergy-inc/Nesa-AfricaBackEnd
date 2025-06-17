@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/database.js";
 import User from "./User.js";
-import Nomination from "./Nomination.js";
+
 
 const NominationForm = sequelize.define("NominationForm", {
     id: {
@@ -14,15 +14,6 @@ const NominationForm = sequelize.define("NominationForm", {
         allowNull: true,
         references: {
             model: User,
-            key: "id",
-        },
-        onDelete: "CASCADE",
-    },
-    nomination_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: Nomination,
             key: "id",
         },
         onDelete: "CASCADE",

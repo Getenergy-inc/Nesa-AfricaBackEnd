@@ -4,6 +4,8 @@ import Referral from "./postgresql/Referral.js";
 import Nomination from "./postgresql/Nomination.js";
 import User from "./postgresql/User.js";
 import NominationForm from './postgresql/NominationForm.js';
+import Judge from "./postgresql/Judge.js";
+import Applicant from "./postgresql/Applicant.js";
 
 
 
@@ -52,16 +54,31 @@ User.hasMany(Nomination, {
   
 });
 
-Nomination.hasMany(NominationForm, {
+
+
+NominationForm.hasMany(Nomination, {
   foreignKey: "nomination_id",
-  as: "forms",
+  as: "Nominations",
+  onDelete: "CASCADE"
+ 
+});
+
+Nomination.belongsTo(NominationForm, {
+   foreignKey: "nomination_id",
+  as: "NominationForm"
+});
+
+
+Judge.hasMany(Applicant, {
+  foreignKey: "judge_id", // exists in Applicant table
+  as: "applicants",
   onDelete: "CASCADE"
 });
 
-// Each NominationForm belongs to a single Nomination
-NominationForm.belongsTo(Nomination, {
-  foreignKey: "nomination_id",
-  as: "nomination"
+// Applicant.js
+Applicant.belongsTo(Judge, {
+  foreignKey: "judge_id", // FK is in Applicant table
+  as: "judge"
 });
 
 
@@ -71,5 +88,7 @@ export {
   Referral,
   Nomination,
   NominationForm,
+  Applicant,
+  Judge,
   User,
 };
