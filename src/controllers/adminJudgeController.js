@@ -407,8 +407,12 @@ export const approveJudgeApplication = async (req, res) => {
 export const getJudgeApplicationById = async (req, res) => {
   const { id } = req.params;
 
+  console.log(id);
+
   try {
     const applicant = await Applicant.findByPk(id);
+
+    console.log(applicant);
 
     if (!applicant) {
       return res.status(404).json({
