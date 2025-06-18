@@ -5,6 +5,7 @@ import ExcelJS from "exceljs";
 import { Parser } from "json2csv";
 import { Sequelize } from "sequelize";
 import JudgeApproved from "../utils/JudgeApproved.js";
+import JudgeDenied from "../utils/JudgeDenied.js";
 
 
 export const getJudgeDashboardStats = async (req, res) => {
@@ -14,7 +15,8 @@ export const getJudgeDashboardStats = async (req, res) => {
     const totalApplications = await Applicant.count();
     const totalAccepted = await Applicant.count({ where: { status: "accepted" } });
     const totalPending = await Applicant.count({ where: { status: "pending" } });
-    const totalDenied = await Applicant.count({ where: { status: "denied" } }); // ✅ Denied applications
+    const totalDenied = await Applicant.count({ where: { status: "denied" } }); 
+    const totalApproved = await Applicant.count({ where: { status: "approved" } });
 
     const applicantsList = await Applicant.findAll({
       attributes: [
@@ -37,8 +39,9 @@ export const getJudgeDashboardStats = async (req, res) => {
       email: app.email,
       phoneNumber: app.phone_number,
       region: app.state_and_region,
-      status: app.status === "accepted" ? "Accepted" :
-              app.status === "denied" ? "Denied" : "Pending",
+      status: app.status === "accepted" ? "accepted" :
+              app.status === "denied" ? "denied" : 
+              app.status === "approved" ? "approved" : "pending",
       createdAt: app.createdAt,
       updatedAt: app.updatedAt,
       applicationCount: app.get("applicationCount"),
@@ -50,6 +53,7 @@ export const getJudgeDashboardStats = async (req, res) => {
       totalAccepted,
       totalPending,
       totalDenied,
+      totalApproved,
       applicants: formattedList,
     });
 
@@ -446,6 +450,45 @@ export const getJudgeApplicationById = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Server error retrieving judge application",
+    });
+  }
+};
+
+
+
+
+export const denyJudgeApplication = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ success: false, message: "Applicant ID is required" });
+  }
+
+  try {
+    // Check if applicant exists
+    const applicant = await Applicant.findByPk(id);
+
+    if (!applicant) {
+      return res.status(404).json({ success: false, message: "Applicant not found" });
+    }
+
+    // Deny using a reusable method
+    const result = await JudgeDenied.JudgeDenied(id); // ⬅️ call deny method
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Judge application denied successfully.",
+      id: result.id,
+    });
+  } catch (error) {
+    console.error("Denial error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while denying application",
     });
   }
 };
