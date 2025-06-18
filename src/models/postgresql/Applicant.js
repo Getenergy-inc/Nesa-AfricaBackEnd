@@ -45,7 +45,7 @@ const Applicant = sequelize.define("Applicant", {
     type: DataTypes.UUID,
     allowNull: true,
     references: {
-      model: "Judges", // Table name for Judge
+      model: "judges", // Table name for Judge
       key: "id"
     },
     onDelete: "CASCADE",
