@@ -33,7 +33,7 @@ const Applicant = sequelize.define("Applicant", {
     type: DataTypes.TEXT
   },
   status: {
-    type: DataTypes.ENUM("pending", "accepted", "denied"),
+    type: DataTypes.ENUM("pending", "accepted", "denied", 'approved'),
     defaultValue: "pending",
     allowNull: false,
   },

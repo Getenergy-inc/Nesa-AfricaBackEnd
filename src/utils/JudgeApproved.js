@@ -12,17 +12,25 @@ class JudgeApproved {
     }
 
     try {
-      const [updated] = await Applicant.update(
-        { status: "approved" },
-        { where: { id: applicantId } }
-      );
+      // Optional: Ensure applicant exists before update
+      const applicant = await Applicant.findByPk(applicantId);
 
-      if (updated === 0) {
+      if (!applicant) {
         return {
           success: false,
-          message: "Applicant not found or already approved.",
+          message: "Applicant not found.",
         };
       }
+
+      if (applicant.status === "approved") {
+        return {
+          success: false,
+          message: "Applicant has already been approved.",
+        };
+      }
+
+      applicant.status = "approved";
+      await applicant.save();
 
       return {
         success: true,
@@ -30,7 +38,12 @@ class JudgeApproved {
         id: applicantId,
       };
     } catch (err) {
-      return { success: false, message: "An error occurred while approving the applicant." };
+      console.error("❌ Error approving applicant:", err); // log error for debugging
+      return {
+        success: false,
+        message: "An error occurred while approving the applicant.",
+        error: err.message, // Optional: add for API visibility
+      };
     }
   }
 }

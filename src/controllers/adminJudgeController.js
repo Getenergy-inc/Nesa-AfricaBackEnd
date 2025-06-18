@@ -374,12 +374,16 @@ export const approveJudgeApplication = async (req, res) => {
     // Check if applicant exists
     const applicant = await Applicant.findByPk(id);
 
+    // console.log(applicant);
+
     if (!applicant) {
       return res.status(404).json({ success: false, message: "Applicant not found" });
     }
 
     // Approve using reusable method
     const result = await JudgeApproved.JudgeApproved(id);
+
+    console.log(result)
 
     if (!result.success) {
       return res.status(400).json(result);
@@ -407,12 +411,8 @@ export const approveJudgeApplication = async (req, res) => {
 export const getJudgeApplicationById = async (req, res) => {
   const { id } = req.params;
 
-  console.log(id);
-
   try {
     const applicant = await Applicant.findByPk(id);
-
-    console.log(applicant);
 
     if (!applicant) {
       return res.status(404).json({
