@@ -7,6 +7,7 @@ import {
   getNominationGroupedPieChart,
   exportNominations,
   getSortedNominations,
+  getNominationById,
 } from "../controllers/adminNominationController.js";
 import { authenticate, isAdmin } from "../middleware/auth.middleware.js";
 
@@ -21,6 +22,7 @@ router.get("/nominations/export",authenticate, isAdmin, exportNominations);
 router.get("/nomination/chart/timeline",authenticate, isAdmin, getNominationTimelineChart);
 router.get("/nomination/chart/grouped",authenticate, isAdmin, getNominationGroupedPieChart);
 router.get("/nomination/sort",authenticate, isAdmin, getSortedNominations);
+router.get("/nomination/:id",authenticate, isAdmin, getNominationById);
 
 
 

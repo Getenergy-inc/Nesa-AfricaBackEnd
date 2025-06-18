@@ -7,7 +7,9 @@ import {
     exportApplications,
     getApplicationTimelineChart,
     getApplicationGroupedChart,
-    getSortedApplications
+    getSortedApplications,
+    approveJudgeApplication,
+    getJudgeApplicationById
 } from "../controllers/adminJudgeController.js";
 
 
@@ -22,6 +24,8 @@ router.get("/judges/export",authenticate, isAdmin, exportApplications);
 router.get("/judges/chart/timeline",authenticate, isAdmin, getApplicationTimelineChart);
 router.get("/judges/chart/grouped",authenticate, isAdmin, getApplicationGroupedChart);
 router.get("/judges/sort",authenticate, isAdmin, getSortedApplications);
+router.put("/judge/approve/:id",authenticate, isAdmin, approveJudgeApplication);
+router.get("/judge/application/:id",authenticate, isAdmin, getJudgeApplicationById);
 
 
 

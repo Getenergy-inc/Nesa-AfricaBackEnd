@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import ExcelJS from "exceljs";
 import { Parser } from "json2csv";
 import { Sequelize } from "sequelize";
+import JudgeApproved from "../utils/JudgeApproved.js";
 
 
 export const getJudgeDashboardStats = async (req, res) => {
@@ -356,5 +357,91 @@ export const getSortedApplications = async (req, res) => {
   } catch (error) {
     console.error("Sort Applications Error:", error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
+
+export const approveJudgeApplication = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ success: false, message: "Applicant ID is required" });
+  }
+
+  try {
+    // Check if applicant exists
+    const applicant = await Applicant.findByPk(id);
+
+    if (!applicant) {
+      return res.status(404).json({ success: false, message: "Applicant not found" });
+    }
+
+    // Approve using reusable method
+    const result = await JudgeApproved.JudgeApproved(id);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Judge application approved successfully.",
+      id: result.id,
+    });
+  } catch (error) {
+    console.error("Approval error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while approving application",
+    });
+  }
+};
+
+
+
+/**
+ * Get a single judge application by ID
+ */
+export const getJudgeApplicationById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const applicant = await Applicant.findByPk(id);
+
+    if (!applicant) {
+      return res.status(404).json({
+        success: false,
+        message: "Judge application not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Judge application retrieved successfully",
+      data: {
+        id: applicant.id,
+        fullName: applicant.full_name,
+        email: applicant.email,
+        phoneNumber: applicant.phone_number,
+        region: applicant.state_and_region,
+        status: applicant.status,
+        motivationStatement: applicant.motivation_statement,
+        experience: applicant.experience,
+        educationBackground: applicant.education_background,
+        profileImage: applicant.upload_profile_image,
+        document: applicant.upload_document,
+        judgeId: applicant.judge_id,
+        createdAt: applicant.createdAt,
+        updatedAt: applicant.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching judge application:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error retrieving judge application",
+    });
   }
 };

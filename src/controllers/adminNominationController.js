@@ -331,3 +331,47 @@ export const getSortedNominations = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
+
+/**
+ * Get a single nomination form by ID
+ */
+export const getNominationById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const nomination = await Nomination.findByPk(id);
+
+    if (!nomination) {
+      return res.status(404).json({
+        success: false,
+        message: "Nomination not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Nomination retrieved successfully",
+      data: {
+        id: nomination.id,
+        name: nomination.name,
+        email: nomination.email,
+        category: nomination.category,
+        categoryType: nomination.categoryType,
+        subCategory: nomination.subCategory,
+        achievements: nomination.achievements,
+        document: nomination.document,
+        status: nomination.status,
+        createdAt: nomination.createdAt,
+        updatedAt: nomination.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching nomination:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error retrieving nomination",
+    });
+  }
+};
