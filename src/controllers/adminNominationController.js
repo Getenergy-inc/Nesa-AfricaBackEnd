@@ -21,6 +21,7 @@ export const getNominationDashboardStats = async (req, res) => {
 
     const nominationList = await Nomination.findAll({
       attributes: [
+        "id",
         "name",
         "email",
         "category",
@@ -31,11 +32,12 @@ export const getNominationDashboardStats = async (req, res) => {
         [fn("COUNT", col("email")), "nominationCount"],
         [fn("MAX", col("createdAt")), "latestCreatedAt"]
       ],
-      group: ["email", "name", "category", "subCategory", "status", "createdAt", "updatedAt"], // ✅ Fix here
+      group: ["id","email", "name", "category", "subCategory", "status", "createdAt", "updatedAt"], // ✅ Fix here
       order: [[fn("MAX", col("createdAt")), sortOrder]],
     });
 
     const formattedList = nominationList.map((nom) => ({
+      id:nom.id,
       fullName: nom.name,
       email: nom.email,
       category: nom.category,
@@ -70,6 +72,7 @@ export const getPaginatedNominations = async (req, res) => {
 
     const groupedNominations = await Nomination.findAll({
       attributes: [
+        "id",
         "name",
         "email",
         "category",
@@ -78,7 +81,7 @@ export const getPaginatedNominations = async (req, res) => {
         [fn("COUNT", col("email")), "nominationCount"],
         [fn("MAX", col("createdAt")), "latestCreatedAt"]
       ],
-      group: ["name", "email", "category", "subCategory", "status"], // ✅ Added "category" here
+      group: ["id","name", "email", "category", "subCategory", "status"], // ✅ Added "category" here
       order: [[fn("MAX", col("createdAt")), sortOrder]],
       offset,
       limit,
@@ -90,6 +93,7 @@ export const getPaginatedNominations = async (req, res) => {
     });
 
     const data = groupedNominations.map((nom) => ({
+      id:nom.id,
       fullName: nom.name,
       email: nom.email,
       category: nom.category,
@@ -125,6 +129,7 @@ export const searchNominations = async (req, res) => {
     const nominations = await Nomination.findAll({
       where: filters,
       attributes: [
+        "id",
         "name",
         "email",
         "category",
@@ -133,11 +138,12 @@ export const searchNominations = async (req, res) => {
         [fn("COUNT", col("email")), "nominationCount"],
         [fn("MAX", col("createdAt")), "latestCreatedAt"]
       ],
-      group: ["name", "email", "category", "subCategory", "status"], // 🛠️ Include "category" here
+      group: ["id","name", "email", "category", "subCategory", "status"], // 🛠️ Include "category" here
       order: [[fn("MAX", col("createdAt")), sortDirection]],
     });
 
     const data = nominations.map((n) => ({
+      id:n.id,
       name: n.name,
       email: n.email,
       category: n.category,
@@ -173,7 +179,7 @@ export const exportNominations = async (req, res) => {
 
     const nominations = await Nomination.findAll({
       where: filters,
-      attributes: ["name", "email", "category", "subCategory", "status", "createdAt"],
+      attributes: [ "id","name", "email", "category", "subCategory", "status", "createdAt"],
       order: [["createdAt", sortOrder]], // ✅ Fixed here
     });
 
@@ -192,6 +198,7 @@ export const exportNominations = async (req, res) => {
     });
 
     const data = nominations.map((n) => ({
+      id: n.id,
       name: n.name,
       email: n.email,
       category: n.category,
@@ -206,6 +213,7 @@ export const exportNominations = async (req, res) => {
       const worksheet = workbook.addWorksheet("Nominations");
 
       worksheet.columns = [
+        { header: "id", key:"id"},
         { header: "Name", key: "name" },
         { header: "Email", key: "email" },
         { header: "Category", key: "category" },
@@ -223,7 +231,7 @@ export const exportNominations = async (req, res) => {
       res.end();
     } else {
       const parser = new Parser({
-        fields: ["name", "email", "category", "subCategory", "status", "nominationCount", "createdAt"],
+        fields: [ "id","name", "email", "category", "subCategory", "status", "nominationCount", "createdAt"],
       });
       const csv = parser.parse(data);
 
@@ -236,6 +244,8 @@ export const exportNominations = async (req, res) => {
     res.status(500).json({ message: "Export failed" });
   }
 };
+
+
 
 // GET /api/nomination/chart/timeline?interval=daily|weekly|monthly
 export const getNominationTimelineChart = async (req, res) => {
@@ -303,6 +313,7 @@ export const getSortedNominations = async (req, res) => {
 
     const nominations = await Nomination.findAll({
       attributes: [
+        "id",
         "name",
         "email",
         "category",
@@ -311,11 +322,12 @@ export const getSortedNominations = async (req, res) => {
         "createdAt",
         [fn("COUNT", col("email")), "nominationCount"]
       ],
-      group: ["name", "email", "subCategory", "status", "createdAt"],
+      group: ["id","name", "email", "subCategory", "status", "createdAt"],
       order: [["createdAt", order]],
     });
 
     const formatted = nominations.map((n) => ({
+      id: n.id,
       fullName: n.name,
       email: n.email,
       category:n.category,
