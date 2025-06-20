@@ -69,40 +69,43 @@ export const applicantSchema = Joi.object({
 
 
 class ApplicantController {
+
   static async create(req, res) {
     try {
       const { error, value } = applicantSchema.validate(req.body);
       if (error) return res.status(400).json({ message: error.details[0].message });
 
-      let documentUrl = null;
-      let profileImageUrl = null;
+      // Handle file uploads (document and profile image)
+      let documentUrl = [];
+      let profileImageUrl = [];
 
-      // Upload document
-      if (req.files?.upload_document?.[0]) {
-        documentUrl = await uploadImageToCloudinary(req.files.upload_document[0].path, 'applicants');
-        await fs.unlink(req.files.upload_document[0].path);
+      if (req.files && req.files.upload_document?.[0]) {
+        const file = req.files.upload_document[0];
+        documentUrl = await uploadImageToCloudinary(file.path, "applicants");
+        await fs.unlink(file.path); // Delete local temp file
       }
 
-      // Upload profile image
-      if (req.files?.upload_profile_image?.[0]) {
-        profileImageUrl = await uploadImageToCloudinary(req.files.upload_profile_image[0].path, 'applicants');
-        await fs.unlink(req.files.upload_profile_image[0].path);
+      if (req.files && req.files.upload_profile_image?.[0]) {
+        const file = req.files.upload_profile_image[0];
+        profileImageUrl = await uploadImageToCloudinary(file.path, "applicants");
+        await fs.unlink(file.path); // Delete local temp file
       }
 
+      // Generate secure token for applicant
       const token = jwt.sign(
         { email: value.email, applicantId: uuidv4() },
         process.env.JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: "7d" }
       );
 
       const applicantPayload = {
         full_name: value.full_name,
-        experience: value.experience,
+        experience: value.experience || null,
         email: value.email,
-        phone_number: value.phone_number,
-        state_and_region: value.state_and_region,
-        motivation_statement: value.motivation_statement,
-        education_background: value.education_background,
+        phone_number: value.phone_number || null,
+        state_and_region: value.state_and_region || null,
+        motivation_statement: value.motivation_statement || null,
+        education_background: value.education_background || null,
         upload_document: documentUrl,
         upload_profile_image: profileImageUrl,
         token,
@@ -110,17 +113,25 @@ class ApplicantController {
 
       const applicant = await ApplicantService.createApplicant(applicantPayload);
 
-      // Send confirmation email with token if needed
+      // Send confirmation email
       if (value.email) {
         const confirmationLink = `https://nesa-test-4alu.vercel.app/nomineesignup1`;
         await sendJudgeEmail(value.email, value.full_name, confirmationLink);
       }
 
-      return res.status(201).json({ message: 'Applicant created successfully', applicant });
+      return res.status(201).json({
+        message: "Applicant created successfully",
+        applicant,
+      });
+
     } catch (error) {
+      console.error("Applicant Creation Error:", error);
       return res.status(500).json({ error: error.message });
     }
   }
+
+
+
 }
 
 export default ApplicantController;
