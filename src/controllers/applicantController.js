@@ -76,8 +76,8 @@ class ApplicantController {
       if (error) return res.status(400).json({ message: error.details[0].message });
 
       // Handle file uploads (document and profile image)
-      let documentUrl = [];
-      let profileImageUrl = [];
+      let documentUrl = null;
+      let profileImageUrl = null;
 
       if (req.files && req.files.upload_document?.[0]) {
         const file = req.files.upload_document[0];
