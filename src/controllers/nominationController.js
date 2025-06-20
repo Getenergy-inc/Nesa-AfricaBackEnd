@@ -29,6 +29,7 @@ class NominationController {
 
       // Upload document(s)
       const documentUrls = [];
+      
       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           const url = await uploadImageToCloudinary(file.path, "nominees");

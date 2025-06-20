@@ -145,7 +145,7 @@ export const sendJudgeEmail = async (to, nomineeName, nominationId, signupLink) 
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("✅ Nomination email sent successfully");
+    console.log("✅ Judge email sent successfully");
   } catch (error) {
     console.error("❌ Error sending email:", error.message || error);
   }

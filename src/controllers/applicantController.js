@@ -61,8 +61,7 @@ export const applicantSchema = Joi.object({
   state_and_region: Joi.string().optional(),
   motivation_statement: Joi.string().optional(),
   education_background: Joi.string().optional(),
-  upload_document: Joi.string().optional(), // optional extra fields
-  upload_profile_image: Joi.string().optional(),
+  status: Joi.string().optional(),
   token: Joi.string().optional(),
 }).unknown(true); // allow additional fields if any
 
@@ -72,25 +71,35 @@ class ApplicantController {
 
   static async create(req, res) {
     try {
+      console.log("FILES RECEIVED:", req.files);
       const { error, value } = applicantSchema.validate(req.body);
       if (error) return res.status(400).json({ message: error.details[0].message });
+
+      const documentFiles = req.files.filter(file => file.fieldname === 'upload_document');
+      const profileImageFiles = req.files.filter(file => file.fieldname === 'upload_profile_image');
 
       // Handle file uploads (document and profile image)
       let documentUrl = [];
       let profileImageUrl = [];
 
-      if (req.files && req.files.upload_document?.[0]) {
-        const file = req.files.upload_document[0];
-        documentUrl = await uploadImageToCloudinary(file.path, "applicants");
-        console.log(documentUrl);
-        await fs.unlink(file.path); // Delete local temp file
+      console.log("hello i am an image..")
+
+      if (documentFiles.length > 0) {
+        for (const file of documentFiles) {
+          const url = await uploadImageToCloudinary(file.path, "applicants");
+          console.log("Document URL:", url);
+          documentUrl.push(url);
+          await fs.unlink(file.path);
+        }
       }
 
-      if (req.files && req.files.upload_profile_image?.[0]) {
-        const file = req.files.upload_profile_image[0];
-        profileImageUrl = await uploadImageToCloudinary(file.path, "applicants");
-        console.log(profileImageUrl);
-        await fs.unlink(file.path); // Delete local temp file
+      if (profileImageFiles.length > 0) {
+        for (const file of profileImageFiles) {
+          const url = await uploadImageToCloudinary(file.path, "applicants");
+          console.log("Profile Image URL:", url);
+          profileImageUrl.push(url);
+          await fs.unlink(file.path);
+        }
       }
 
       // Generate secure token for applicant
@@ -108,7 +117,7 @@ class ApplicantController {
         state_and_region: value.state_and_region || null,
         motivation_statement: value.motivation_statement || null,
         education_background: value.education_background || null,
-        upload_document: documentUrl.length > 0 ? documentUrl[0] : null ,
+        upload_document: documentUrl.length > 0 ? documentUrl[0] : null,
         upload_profile_image: profileImageUrl.length > 0 ? profileImageUrl[0] : null,
         token,
       };
