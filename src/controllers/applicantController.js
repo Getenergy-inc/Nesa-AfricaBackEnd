@@ -76,18 +76,20 @@ class ApplicantController {
       if (error) return res.status(400).json({ message: error.details[0].message });
 
       // Handle file uploads (document and profile image)
-      let documentUrl = null;
-      let profileImageUrl = null;
+      let documentUrl = [];
+      let profileImageUrl = [];
 
       if (req.files && req.files.upload_document?.[0]) {
         const file = req.files.upload_document[0];
         documentUrl = await uploadImageToCloudinary(file.path, "applicants");
+        console.log(documentUrl);
         await fs.unlink(file.path); // Delete local temp file
       }
 
       if (req.files && req.files.upload_profile_image?.[0]) {
         const file = req.files.upload_profile_image[0];
         profileImageUrl = await uploadImageToCloudinary(file.path, "applicants");
+        console.log(profileImageUrl);
         await fs.unlink(file.path); // Delete local temp file
       }
 
@@ -106,8 +108,8 @@ class ApplicantController {
         state_and_region: value.state_and_region || null,
         motivation_statement: value.motivation_statement || null,
         education_background: value.education_background || null,
-        upload_document: documentUrl,
-        upload_profile_image: profileImageUrl,
+        upload_document: documentUrl.length > 0 ? documentUrl[0] : null ,
+        upload_profile_image: profileImageUrl.length > 0 ? profileImageUrl[0] : null,
         token,
       };
 
