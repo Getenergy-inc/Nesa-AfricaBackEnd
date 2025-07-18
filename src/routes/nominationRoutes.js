@@ -9,7 +9,7 @@ const router = express.Router();
 // Use upload.any() to accept files from any field names
 router.post("/create-nominate", authenticate, upload.any(), NominationController.create);
 router.get("/nominate-list", authenticate, NominationController.getAll);
-router.get("/:id", authenticate, NominationController.getById);
+router.get("get-nominate/:id", authenticate, NominationController.getById);
 router.put("/update/:id", authenticate, upload.any(), NominationController.update);
 router.delete("/delete/:id", authenticate, NominationController.delete);
 router.get("/verify", NominationLink.verifyNominationToken);
